@@ -34,7 +34,7 @@ out vec4 out_color;
 
 void main()
 {
-    out_color = vec4(0.5, 0.5, 0.5, 1.0);
+    out_color = vec4(0.7, 0.7, 0.7, 1.0);
 }
 """
 
@@ -49,9 +49,20 @@ def key_event(window, key, scancode, action, mods):
 
     # Keep the sun rotating as long as the left or right arrow key is pressed
     if key == glfw.KEY_LEFT and action != glfw.RELEASE:
-        angle -= 5
+        angle -= 2
     elif key == glfw.KEY_RIGHT and action != glfw.RELEASE:
-        angle += 5
+        angle += 2
+
+    # Keep the angle between 0 and 360
+    if angle % 360 == 0:
+        angle = 0 
+    
+    # Change the background color based on the angle
+    if abs(angle) >= 280 or abs(angle) <= 80:
+        glClearColor(0.3 ,0.3 ,0.5 ,1) # Night sky
+    else:
+        glClearColor(0.5 ,0.5 ,1 ,1) # Blue sky
+
 
 def create_sun():
     global angle

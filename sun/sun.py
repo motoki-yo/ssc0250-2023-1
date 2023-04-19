@@ -148,7 +148,9 @@ def create_sun():
     while not glfw.window_should_close(window):
         glfw.poll_events()
 
+        # Drawing the sun
         glUseProgram(shader)
+
         transformation = np.array([math.cos(math.radians(angle)), -math.sin(math.radians(angle)), 0.0, 0.0,
                                    math.sin(math.radians(angle)), math.cos(math.radians(angle)), 0.0, 0.0,
                                    0.0, 0.0, 1.0, 0.0,
@@ -164,12 +166,13 @@ def create_sun():
         glBindVertexArray(VAO_rays)
         glDrawArrays(GL_TRIANGLES ,0 ,24)
 
+        # Drawing the moon
         glUseProgram(moon_shader)
 
         transformation = np.array([math.cos(math.radians(angle + 180)), -math.sin(math.radians(angle + 180)), 0.0, 0.0,
                                    math.sin(math.radians(angle + 180)), math.cos(math.radians(angle + 180)), 0.0, 0.0,
                                    0.0, 0.0, 1.0, 0.0,
-                                   -math.sin(math.radians(angle + 180)) * 2, -1.8 - math.cos(math.radians(angle + 180)) * 2 + window_height / 480, 0.0, 1.0], dtype=np.float32)
+                                   -math.sin(math.radians(angle + 180)) * 2, -1.8 - math.cos(math.radians(angle + 180)) * 2 + window_height / window_height, 0.0, 1.0], dtype=np.float32)
 
         glUniformMatrix4fv(glGetUniformLocation(moon_shader, "u_transformation"), 1, GL_FALSE, transformation)
 

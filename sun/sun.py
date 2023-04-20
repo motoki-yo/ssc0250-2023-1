@@ -1,44 +1,23 @@
 import glfw
 from OpenGL.GL import *
-from OpenGL.GL.shaders import compileProgram, compileShader
+import OpenGL.GL.shaders
 import numpy as np
 import math
 
-vertex_src = """
-# version 330
+vertex_code = """
+        attribute vec2 position;
+        uniform mat4 mat;
+        void main(){
+            gl_Position = mat * vec4(position,0.0,1.0);
+        }
+        """
 
-in vec2 a_position;
-uniform mat4 u_transformation;
-
-void main()
-{
-    gl_Position = u_transformation * vec4(a_position, 0.0, 1.0);
-}
-"""
-
-fragment_src = """
-# version 330
-
-out vec4 out_color;
-
-void main()
-{
-    out_color = vec4(1.0, 1.0, 0.0, 1.0);
-}
-"""
-
-moon_fragment_src = """
-# version 330
-
-out vec4 out_color;
-
-void main()
-{
-    out_color = vec4(0.7, 0.7, 0.7, 1.0);
-}
-"""
-
-
+fragment_code = """
+        uniform vec4 color;
+        void main(){
+            gl_FragColor = color;
+        }
+        """
 
 def multiplica_matriz(a,b):
     m_a = a.reshape(4,4)
@@ -46,6 +25,14 @@ def multiplica_matriz(a,b):
     m_c = np.dot(m_a,m_b)
     c = m_c.reshape(1,16)
     return c
+
+
+def check_day(angle):
+    if abs(angle) >= 280 or abs(angle) <= 80:
+        return 1 # Day
+    else:
+        return 0 # Night
+    
 
 def key_event(window, key, scancode, action, mods):
     global angle
@@ -58,18 +45,16 @@ def key_event(window, key, scancode, action, mods):
 
     # Keep the sun rotating as long as the left or right arrow key is pressed
     if key == glfw.KEY_LEFT and action != glfw.RELEASE:
-        angle += 2
-    elif key == glfw.KEY_RIGHT and action != glfw.RELEASE:
         angle -= 2
+    elif key == glfw.KEY_RIGHT and action != glfw.RELEASE:
+        angle += 2
 
     # Keep the angle between 0 and 360
     if angle % 360 == 0:
         angle = 0 
     
-    print(angle)
-
     # Change the background color based on the angle
-    if abs(angle) >= 280 or abs(angle) <= 80:
+    if check_day(angle) == 1:
         glClearColor(0.5 ,0.5 ,1 ,1) # Blue sky
     else:
         glClearColor(0.3 ,0.3 ,0.5 ,1) # Night sky
@@ -78,7 +63,7 @@ def key_event(window, key, scancode, action, mods):
 
 def create_sun():
     global angle
-    angle = 338 # Sun starts at the right position
+    angle = 200
 
     # Initialize glfw
     if not glfw.init():
@@ -96,10 +81,41 @@ def create_sun():
 
     glfw.make_context_current(window)
 
-    # Create shader program
-    shader = compileProgram(compileShader(vertex_src, GL_VERTEX_SHADER), compileShader(fragment_src, GL_FRAGMENT_SHADER))
-    moon_shader = compileProgram(compileShader(vertex_src, GL_VERTEX_SHADER), compileShader(moon_fragment_src, GL_FRAGMENT_SHADER))
+    # Request a program and shader slots from GPU
+    program  = glCreateProgram()
+    vertex   = glCreateShader(GL_VERTEX_SHADER)
+    fragment = glCreateShader(GL_FRAGMENT_SHADER)
 
+    # Set shaders source
+    glShaderSource(vertex, vertex_code)
+    glShaderSource(fragment, fragment_code)
+
+    # Compile shaders
+    glCompileShader(vertex)
+    if not glGetShaderiv(vertex, GL_COMPILE_STATUS):
+        error = glGetShaderInfoLog(vertex).decode()
+        print(error)
+        raise RuntimeError("Erro de compilacao do Vertex Shader")
+
+    glCompileShader(fragment)
+    if not glGetShaderiv(fragment, GL_COMPILE_STATUS):
+        error = glGetShaderInfoLog(fragment).decode()
+        print(error)
+        raise RuntimeError("Erro de compilacao do Fragment Shader")
+
+    # Attach shader objects to the program
+    glAttachShader(program, vertex)
+    glAttachShader(program, fragment)
+
+    # Build program
+    glLinkProgram(program)
+    if not glGetProgramiv(program, GL_LINK_STATUS):
+        print(glGetProgramInfoLog(program))
+        raise RuntimeError('Linking error')
+        
+    # Make program the default program
+    glUseProgram(program)
+    
     # Create sun circle
     circle = []
     for i in range(361):
@@ -164,15 +180,21 @@ def create_sun():
     glVertexAttribPointer(0 ,2 ,GL_FLOAT ,GL_FALSE ,0 ,None)
     glEnableVertexAttribArray(0)
 
-    glUseProgram(shader)
+    # Background color
+    glClearColor(0.5 ,0.5 ,1 ,1) 
 
-    glClearColor(0.5 ,0.5 ,1 ,1)
+    # Get location of color uniform and set it
+    loc_color = glGetUniformLocation(program, "color")
+    R = 1.0
+    G = 0.0
+    B = 0.0
+
+    glfw.show_window(window)
 
     while not glfw.window_should_close(window):
         glfw.poll_events()
 
-        # Drawing the sun
-        glUseProgram(shader)
+        glClear(GL_COLOR_BUFFER_BIT)
 
         sun_translation = np.array([[1.0, 0.0, 0.0, 0],
                 [0.0, 1.0, 0.0, -0.9],
@@ -197,10 +219,11 @@ def create_sun():
         sun_transformation = multiplica_matriz(sun_translation, sun_rotation)
         sun_transformation = multiplica_matriz(sun_transformation, sun_translation2)
 
-        glUniformMatrix4fv(glGetUniformLocation(shader, "u_transformation"), 1, GL_TRUE, sun_transformation)
+        glUniformMatrix4fv(glGetUniformLocation(program, "mat"), 1, GL_TRUE, sun_transformation)
 
         glClear(GL_COLOR_BUFFER_BIT)
 
+        glUniform4f(loc_color, 1, 1, 0.0, 1.0)
         glBindVertexArray(VAO_circle)
         glDrawArrays(GL_TRIANGLE_FAN ,0 ,362)
 
@@ -208,9 +231,6 @@ def create_sun():
         glDrawArrays(GL_TRIANGLES ,0 ,24)
 
         # Drawing the moon
-        glUseProgram(moon_shader)
-
-
         moon_translation = np.array([[1.0, 0.0, 0.0, 0],
                 [0.0, 1.0, 0.0, -1],
                 [0.0, 0.0, 1.0, 0.0],
@@ -234,10 +254,12 @@ def create_sun():
         moon_transformation = multiplica_matriz(moon_translation, moon_rotation)
         moon_transformation = multiplica_matriz(moon_transformation, moon_translation2)
 
-        glUniformMatrix4fv(glGetUniformLocation(moon_shader, "u_transformation"), 1, GL_TRUE, moon_transformation)
+        glUniformMatrix4fv(glGetUniformLocation(program, "mat"), 1, GL_TRUE, moon_transformation)
 
         glBindVertexArray(VAO_moon_circle)
+        glUniform4f(loc_color, 0.7, 0.7, 0.7, 1.0)
         glDrawArrays(GL_TRIANGLE_FAN ,0 ,362)
+
 
         glfw.swap_buffers(window)
 

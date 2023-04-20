@@ -7,9 +7,10 @@ class BettaFish():
   data = np.zeros(64, [("position", np.float32, 2)])
   parts = []
   translateX = 0.0
+  translateY = 0.0
   scaleInc = 1.0
 
-  def __init__(self, scaleFactor = .3):
+  def __init__(self):
     # Body
     self.data[0] = [-0.625, 0.25]
     self.data[1] = [0.0, 0.0]
@@ -84,15 +85,17 @@ class BettaFish():
       (GL_TRIANGLE_FAN, 41, 23, (0, 0, 0))
     )
 
-    # Scaling each vertex
+    # Scaling and translating each vertex
     for i in range(0, len(self.data)):
       for vertex in self.data[i]:
-        vertex *= scaleFactor
+        vertex *= .3
+      
+      self.data[i][0][1] -= 0.5
 
   def getTransformMatrix(self):
     translateMx = np.array([
       [1.0, 0.0, 0.0, self.translateX],
-      [0.0, 1.0, 0.0, 0.0],
+      [0.0, 1.0, 0.0, self.translateY],
       [0.0, 0.0, 1.0, 0.0],
       [0.0, 0.0, 0.0, 1.0]
     ])
@@ -107,6 +110,13 @@ class BettaFish():
     return np.matmul(translateMx, scaleMx)
   
   def handleKeyEvent(self, window, key, scancode, action, mods):
+
+    if key == glfw.KEY_W and action != glfw.RELEASE:
+      self.translateY += 0.01
+    
+    if key == glfw.KEY_S and action != glfw.RELEASE:
+      self.translateY -= 0.01
+
     if key == glfw.KEY_A and action != glfw.RELEASE:
       self.translateX -= 0.01 # A key to move left
 

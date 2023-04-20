@@ -1,8 +1,10 @@
 import glfw
 import math
 import numpy as np
-from bettaFish import BettaFish
-from sun import Sun
+from objects.bettaFish import BettaFish
+from objects.moon import Moon
+from objects.ocean import Ocean
+from objects.sun import Sun
 from OpenGL.GL import *
 
 vertexSrc = """
@@ -58,13 +60,16 @@ def initWindow(w, h, title):
   return window
 
 def convertRGB(color):
-  return color[0]/255.0 , color[1]/255.0 , color[2]/255.0
+  return color[0]/255.0 , color[1]/255.0 , color[2]/255.0, 1.0
 
 # Initializing GLFW
 glfw.init()
 
+# Disable Window Resizing
+glfw.window_hint(glfw.RESIZABLE, False)
+
 # Creating the window
-window = initWindow(800, 800, "Ocean")
+window = initWindow(800, 800, "Sea View")
 
 # Create OpenGL program
 program = glCreateProgram()
@@ -87,27 +92,29 @@ glBindBuffer(GL_ARRAY_BUFFER, buffer)
 
 # Populate vertex array
 
-objects = [Sun(800)]
+objects = [Ocean(), BettaFish(), Sun(), Moon()]
 
-vertexes = []
+objectsInScene = []
 
 for obj in objects:
-  vertexes.extend(obj.data)
 
-vertexes = np.array(vertexes, dtype=[("position", np.float32, 2)])
+    # Create Vertex Buffer Object for each object
+    objectVbo = glGenBuffers(1)
+    glBindBuffer(GL_ARRAY_BUFFER,objectVbo)
+    glBufferData(GL_ARRAY_BUFFER,obj.data.nbytes,obj.data,GL_STATIC_DRAW)
 
-# Upload data
-glBufferData(GL_ARRAY_BUFFER, vertexes.nbytes, vertexes, GL_DYNAMIC_DRAW)
-glBindBuffer(GL_ARRAY_BUFFER, buffer)
+    # Create Vertex Array Object for each object
+    objectVao = glGenVertexArrays(1)
+    glBindVertexArray(objectVao)
+    glBindBuffer(GL_ARRAY_BUFFER,objectVbo)
+    glVertexAttribPointer(0 ,2 ,GL_FLOAT ,GL_FALSE ,0 ,None)
+    glEnableVertexAttribArray(0)
 
-# Bind the position attribute
-stride = vertexes.strides[0]
-offset = ctypes.c_void_p(0)
-
-# Getting the position attribute location
-positionLoc = glGetAttribLocation(program, "position")
-glEnableVertexAttribArray(positionLoc)
-glVertexAttribPointer(positionLoc, 2, GL_FLOAT, False, stride, offset)
+    objectsInScene.append({
+      "vao": objectVao,
+      "vbo": objectVbo,
+      "obj": obj
+    })
 
 # Getting the color uniform location
 colorLoc = glGetUniformLocation(program, "color")
@@ -125,26 +132,42 @@ glfw.show_window(window)
 
 glClearColor(0.5 ,0.5 ,1 ,1)
 
+time = 0
+
 while not glfw.window_should_close(window):
+
+  if time > 100000:
+    time = 0
+
+  time += 1
 
   glfw.poll_events()
 
   glClear(GL_COLOR_BUFFER_BIT)
 
-  vertexOffset = 0
+  for objSc in objectsInScene:
 
-  for obj in objects:
+    obj = objSc["obj"]
+    vao = objSc["vao"]
+
     for part in obj.parts:
       glUniformMatrix4fv(matrixLoc, 1, GL_TRUE, obj.getTransformMatrix())
 
       partType, partStart, partLength, partColor = part
-      r,g,b = convertRGB(partColor)
 
-      glUniform4f(colorLoc, r, g, b, 1.0)
+      # If there is no color, use the background color
+      r,g,b,a = glGetFloatv(GL_COLOR_CLEAR_VALUE) if partColor == None else convertRGB(partColor)
 
-      glDrawArrays(partType, vertexOffset + partStart, partLength)
+      glUniform4f(colorLoc, r, g, b, a)
 
-  vertexOffset += len(obj.data)
+      glBindVertexArray(vao)
+
+      glDrawArrays(partType, partStart, partLength)
+    
+    handleTime = getattr(obj, "handleTime", None)
+
+    if callable(handleTime):
+      obj.handleTime(time)
 
 
   glfw.swap_buffers(window)

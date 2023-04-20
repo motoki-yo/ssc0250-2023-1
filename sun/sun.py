@@ -45,9 +45,9 @@ def key_event(window, key, scancode, action, mods):
 
     # Keep the sun rotating as long as the left or right arrow key is pressed
     if key == glfw.KEY_LEFT and action != glfw.RELEASE:
-        angle -= 2
-    elif key == glfw.KEY_RIGHT and action != glfw.RELEASE:
         angle += 2
+    elif key == glfw.KEY_RIGHT and action != glfw.RELEASE:
+        angle -= 2
 
     # Keep the angle between 0 and 360
     if angle % 360 == 0:
@@ -63,7 +63,7 @@ def key_event(window, key, scancode, action, mods):
 
 def create_sun():
     global angle
-    angle = 200
+    angle = 338
 
     # Initialize glfw
     if not glfw.init():

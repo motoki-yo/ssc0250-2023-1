@@ -8,4 +8,4 @@ Comandos:
 
 W, A, S, D = Movimentação do peixe
 
-Z, X -> Escala do peixe
+Z, X = Escala do peixe

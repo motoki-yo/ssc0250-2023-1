@@ -5,6 +5,7 @@ from objects.bettaFish import BettaFish
 from objects.moon import Moon
 from objects.ocean import Ocean
 from objects.sun import Sun
+from objects.ship import Ship
 from OpenGL.GL import *
 
 vertexSrc = """
@@ -92,7 +93,7 @@ glBindBuffer(GL_ARRAY_BUFFER, buffer)
 
 # Populate vertex array
 
-objects = [Ocean(), BettaFish(), Sun(), Moon()]
+objects = [Ocean(), BettaFish(), Sun(), Moon(), Ship()]
 
 objectsInScene = []
 

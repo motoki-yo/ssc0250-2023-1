@@ -86,8 +86,17 @@ class Sun():
     
     # Change the background color based on the angle
     # Ideally, this would be in the main loop in a sort of return value handler
-    if abs(self.sunAngle) >= 280 or abs(self.sunAngle) <= 80:
-        glClearColor(0.5 ,0.5 ,1 ,1) # Blue sky
-    else:
-        glClearColor(0.3 ,0.3 ,0.5 ,1) # Night sky
+    self.color_transition(self.sunAngle)
+
+  # Linear interpolation between two values
+  def lerp(self, a, b, t):
+      return a + (b - a) * t
+
+  # Uses linear interpolation to change the background color based on the angle
+  def color_transition(self, angle):
+      t = (math.cos(math.radians(angle)) + 1) / 2
+      r = self.lerp(0.2, 0.5, t)
+      g = self.lerp(0.2, 0.5, t)
+      b = self.lerp(0.5, 1.0, t)
+      glClearColor(r, g, b, 1)
 

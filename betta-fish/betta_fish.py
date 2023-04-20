@@ -66,51 +66,51 @@ peixe_betta = np.zeros(num_vertices, [("position", np.float32, 2)])
 
 ### Peixe
 # TORSO
-peixe_betta[400] = [-0.625, 0.25]
-peixe_betta[401] = [0.0, 0.0]
-peixe_betta[402] = [-0.625, -0.25]
+peixe_betta[0] = [-0.625, 0.25]
+peixe_betta[1] = [0.0, 0.0]
+peixe_betta[2] = [-0.625, -0.25]
 
 # NAD1
-peixe_betta[403] = [-0.45, 0.3]
-peixe_betta[404] = [-0.25, 0.20]
-peixe_betta[405] = [-0.370, 0.0]
+peixe_betta[3] = [-0.45, 0.3]
+peixe_betta[4] = [-0.25, 0.20]
+peixe_betta[5] = [-0.370, 0.0]
 #NAD2
-peixe_betta[406] = [-0.45, -0.3]
-peixe_betta[407] = [-0.25, -0.20]
-peixe_betta[408] = [-0.370, 0.0]
+peixe_betta[6] = [-0.45, -0.3]
+peixe_betta[7] = [-0.25, -0.20]
+peixe_betta[8] = [-0.370, 0.0]
 
 #CAUD 1
-peixe_betta[409] = [-0.75, 0.375]
-peixe_betta[410] = [-0.625, 0.0]
-peixe_betta[411] = [-1.0, 0.25]
+peixe_betta[9] = [-0.75, 0.375]
+peixe_betta[10] = [-0.625, 0.0]
+peixe_betta[11] = [-1.0, 0.25]
 #CAUD2
-peixe_betta[412] = [-1.05, 0.175]
-peixe_betta[413] = [-0.625, 0.0]
-peixe_betta[414] = [-1.05, -0.175]
+peixe_betta[12] = [-1.05, 0.175]
+peixe_betta[13] = [-0.625, 0.0]
+peixe_betta[14] = [-1.05, -0.175]
 #CAUD3
-peixe_betta[415] = [-1.0, -0.25]
-peixe_betta[416] = [-0.625, 0.0]
-peixe_betta[417] = [-0.75, -0.375]
+peixe_betta[15] = [-1.0, -0.25]
+peixe_betta[16] = [-0.625, 0.0]
+peixe_betta[17] = [-0.75, -0.375]
 
 # Olho do peixe
 
-for i in range(418,441):
-    x = 0.07  * math.cos(i * (2 * math.pi / 23) ) - 0.3
-    y = 0.07 * math.sin(i * (2 * math.pi / 23) ) + 0.01
+for i in range(18,50):
+    x = 0.07  * math.cos(i * (2 * math.pi / 32) ) - 0.3
+    y = 0.07 * math.sin(i * (2 * math.pi / 32) ) + 0.01
     peixe_betta[i] = [x,y]
     
 # Pupila do peixe
 
-for i in range(441,464):
-    x = 0.04 * math.cos(i * (2 * math.pi / 23) ) - 0.275
-    y = 0.04 * math.sin(i * (2 * math.pi / 23) ) 
+for i in range(51,83):
+    x = 0.04 * math.cos(i * (2 * math.pi / 32) ) - 0.275
+    y = 0.04 * math.sin(i * (2 * math.pi / 32) ) 
     peixe_betta[i] = [x,y]
     
 # Definindo o fator de escala
 factor = 0.3
 
 # Aplicando a transformação de escala em cada vértice
-for i in range(400, 488):
+for i in range(0, 83):
     for vertex in peixe_betta[i]:
         vertex *= factor
 
@@ -227,28 +227,28 @@ while not glfw.window_should_close(window):
     glUniformMatrix4fv(loc, 1, GL_TRUE, mat_trans_peixe)
     
     glUniform4f(loc_color, float(206) / 255.0, float(66) / 255.0, float(87) / 255.0, 1.0);
-    glDrawArrays(GL_TRIANGLES, 403, 3) # NAD1
+    glDrawArrays(GL_TRIANGLES, 3, 3) # NAD1
     
     glUniform4f(loc_color, float(206) / 255.0, float(66) / 255.0, float(87) / 255.0, 1.0);
-    glDrawArrays(GL_TRIANGLES, 406, 3) # NAD2
+    glDrawArrays(GL_TRIANGLES, 6, 3) # NAD2
     
     glUniform4f(loc_color, float(255) / 255.0, float(127) / 255.0, float(81) / 255.0, 1.0);
-    glDrawArrays(GL_TRIANGLES, 400, 3) # TORSO
+    glDrawArrays(GL_TRIANGLES, 0, 3) # TORSO
     
     glUniform4f(loc_color, float(206) / 255.0, float(66) / 255.0, float(87) / 255.0, 1.0);
-    glDrawArrays(GL_TRIANGLES, 409, 3) # CAUD1
+    glDrawArrays(GL_TRIANGLES, 9, 3) # CAUD1
     
     glUniform4f(loc_color, float(206) / 255.0, float(66) / 255.0, float(87) / 255.0, 1.0);
-    glDrawArrays(GL_TRIANGLES, 412, 3) # CAUD2
+    glDrawArrays(GL_TRIANGLES, 12, 3) # CAUD2
 
     glUniform4f(loc_color, float(206) / 255.0, float(66) / 255.0, float(87) / 255.0, 1.0);
-    glDrawArrays(GL_TRIANGLES, 415, 3) # CAUD3
+    glDrawArrays(GL_TRIANGLES, 15, 3) # CAUD3
     
     glUniform4f(loc_color, 1.0, 1.0, 1.0, 1.0) 
-    glDrawArrays(GL_TRIANGLE_FAN, 418, 23) #OLHO
+    glDrawArrays(GL_TRIANGLE_FAN, 18, 32) #OLHO
     
     glUniform4f(loc_color, 0.0, 0.0, 0.0, 0.0) 
-    glDrawArrays(GL_TRIANGLE_FAN, 441, 23) #PUPILA
+    glDrawArrays(GL_TRIANGLE_FAN, 51, 32) #PUPILA
     
     glfw.swap_buffers(window)
 

@@ -4,6 +4,6 @@
 # Trabalho 1
 Comandos:
 
-<-, -> = Rotação do Sol
-W, A, S, D = Movimentação do peixe
-Z, X -> Escala do peixe
+<-, -> = Rotação do Sol \n
+W, A, S, D = Movimentação do peixe \n
+Z, X -> Escala do peixe \n

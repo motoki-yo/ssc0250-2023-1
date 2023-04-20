@@ -38,6 +38,15 @@ void main()
 }
 """
 
+
+
+def multiplica_matriz(a,b):
+    m_a = a.reshape(4,4)
+    m_b = b.reshape(4,4)
+    m_c = np.dot(m_a,m_b)
+    c = m_c.reshape(1,16)
+    return c
+
 def key_event(window, key, scancode, action, mods):
     global angle
 
@@ -162,12 +171,33 @@ def create_sun():
         # Drawing the sun
         glUseProgram(shader)
 
-        transformation = np.array([math.cos(math.radians(angle)), -math.sin(math.radians(angle)), 0.0, 0.0,
-                                   math.sin(math.radians(angle)), math.cos(math.radians(angle)), 0.0, 0.0,
-                                   0.0, 0.0, 1.0, 0.0,
-                                   -math.sin(math.radians(angle)) * 2, -1.8 - math.cos(math.radians(angle)) * 2 + window_height / window_height, 0.0, 1.0], dtype=np.float32)
 
-        glUniformMatrix4fv(glGetUniformLocation(shader, "u_transformation"), 1, GL_FALSE, transformation)
+        sun_translation = np.array([[1.0, 0.0, 0.0, 0.0],
+                        [0.0, 1.0, 0.0, 0.0],
+                        [0.0, 0.0, 1.0, 0.0],
+                        [-math.sin(math.radians(angle)) * 2,
+                         -1.8 - math.cos(math.radians(angle)) * 2 + window_height / window_height,
+                         0.0,
+                         1.0]], dtype=np.float32)
+        
+        sun_scaling = np.array([[1.0, 0.0, 0.0, 0.0],
+                    [0.0, 1.0, 0.0, 0.0],
+                    [0.0, 0.0, 1.0, 0.0],
+                    [0.0, 0.0, 0.0, 1.]], dtype=np.float32)
+        
+        sun_rotation = np.array([[math.cos(math.radians(angle)), -math.sin(math.radians(angle)), 0.0, 0.0],
+                     [math.sin(math.radians(angle)), math.cos(math.radians(angle)), 0.0, 0.0],
+                     [0.0, 0.0, 1.0, 0.0],
+                     [0.0, 0.0, 0.0, 1.]], dtype=np.float32)
+        
+        sun_transformation = multiplica_matriz(sun_rotation, sun_translation)
+
+        # transformation = np.array([math.cos(math.radians(angle)), -math.sin(math.radians(angle)), 0.0, 0.0,
+        #                            math.sin(math.radians(angle)), math.cos(math.radians(angle)), 0.0, 0.0,
+        #                            0.0, 0.0, 1.0, 0.0,
+        #                            -math.sin(math.radians(angle)) * 2, -1.8 - math.cos(math.radians(angle)) * 2 + window_height / window_height, 0.0, 1.0], dtype=np.float32)
+
+        glUniformMatrix4fv(glGetUniformLocation(shader, "u_transformation"), 1, GL_FALSE, sun_transformation)
 
         glClear(GL_COLOR_BUFFER_BIT)
 
@@ -180,12 +210,32 @@ def create_sun():
         # Drawing the moon
         glUseProgram(moon_shader)
 
-        transformation = np.array([math.cos(math.radians(angle + 180)), -math.sin(math.radians(angle + 180)), 0.0, 0.0,
-                                   math.sin(math.radians(angle + 180)), math.cos(math.radians(angle + 180)), 0.0, 0.0,
-                                   0.0, 0.0, 1.0, 0.0,
-                                   -math.sin(math.radians(angle + 180)) * 2, -1.8 - math.cos(math.radians(angle + 180)) * 2 + window_height / window_height, 0.0, 1.0], dtype=np.float32)
 
-        glUniformMatrix4fv(glGetUniformLocation(moon_shader, "u_transformation"), 1, GL_FALSE, transformation)
+        moon_translation = np.array([[1.0, 0.0, 0.0, 0.0],
+                        [0.0, 1.0, 0.0, 0.0],
+                        [0.0, 0.0, 1.0, 0.0],
+                        [-math.sin(math.radians(angle + 180)) * 2,
+                         -1.8 - math.cos(math.radians(angle + 180)) * 2 + window_height / window_height,
+                         0.0,
+                         1.0]], dtype=np.float32)
+        
+        moon_scaling = np.array([[1.0, 0.0, 0.0, 0.0],
+                    [0.0, 1.0, 0.0, 0.0],
+                    [0.0, 0.0, 1.0, 0.0],
+                    [0.0, 0.0, 0.0, 1.]], dtype=np.float32)
+        
+        moon_rotation = np.array([[math.cos(math.radians(angle + 180)), -math.sin(math.radians(angle + 180)), 0.0, 0.0],
+                     [math.sin(math.radians(angle + 180)), math.cos(math.radians(angle + 180)), 0.0, 0.0],
+                     [0.0, 0.0, 1.0, 0.0],
+                     [0.0, 0.0, 0.0, 1.]], dtype=np.float32)
+        
+        moon_transformation = multiplica_matriz(moon_rotation, moon_translation)
+        # transformation = np.array([math.cos(math.radians(angle + 180)), -math.sin(math.radians(angle + 180)), 0.0, 0.0,
+        #                            math.sin(math.radians(angle + 180)), math.cos(math.radians(angle + 180)), 0.0, 0.0,
+        #                            0.0, 0.0, 1.0, 0.0,
+        #                            -math.sin(math.radians(angle + 180)) * 2, -1.8 - math.cos(math.radians(angle + 180)) * 2 + window_height / window_height, 0.0, 1.0], dtype=np.float32)
+
+        glUniformMatrix4fv(glGetUniformLocation(moon_shader, "u_transformation"), 1, GL_FALSE, moon_transformation)
 
         glBindVertexArray(VAO_moon_circle)
         glDrawArrays(GL_TRIANGLE_FAN ,0 ,362)

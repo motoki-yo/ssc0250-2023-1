@@ -35,5 +35,14 @@ Implementation made for the discipline of Computer Graphics - SSC0250 at ICMC - 
   or
 
   ```
-  ./run.sh
+  ./run
   ```
+
+## Program Controls:
+
+- `<-, ->`
+  - Rotates Sun and Moon
+- `W, A, S, D`
+  - Moves Fish (W = Up, A = Left, S = Down, D = Right)
+- `Z, X`
+  - Scales Fish (Z = Smaller, X = Bigger)

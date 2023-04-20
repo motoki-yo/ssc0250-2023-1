@@ -26,13 +26,25 @@ def multiplica_matriz(a,b):
     c = m_c.reshape(1,16)
     return c
 
-
+# CHeck if the sun is in the day or night position
 def check_day(angle):
     if abs(angle) >= 280 or abs(angle) <= 80:
         return 1 # Day
     else:
         return 0 # Night
-    
+
+# Linear interpolation between two values
+def lerp(a, b, t):
+    return a + (b - a) * t
+
+# Uses linear interpolation to change the background color based on the angle
+def color_transition(angle):
+    t = (math.cos(math.radians(angle)) + 1) / 2
+    r = lerp(0.2, 0.5, t)
+    g = lerp(0.2, 0.5, t)
+    b = lerp(0.5, 1.0, t)
+    glClearColor(r, g, b, 1)
+
 
 def key_event(window, key, scancode, action, mods):
     global angle
@@ -54,10 +66,7 @@ def key_event(window, key, scancode, action, mods):
         angle = 0 
     
     # Change the background color based on the angle
-    if check_day(angle) == 1:
-        glClearColor(0.5 ,0.5 ,1 ,1) # Blue sky
-    else:
-        glClearColor(0.3 ,0.3 ,0.5 ,1) # Night sky
+    color_transition(angle)
 
 
 

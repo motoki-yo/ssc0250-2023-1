@@ -123,7 +123,7 @@ class BettaFish():
     if key == glfw.KEY_D and action != glfw.RELEASE:
       self.translateX += 0.01
     
-    if key == glfw.KEY_Z and action != glfw.RELEASE:
-      self.scaleInc += 0.01 # Z key to increase
     if key == glfw.KEY_X and action != glfw.RELEASE:
+      self.scaleInc += 0.01 # Z key to increase
+    if key == glfw.KEY_Z and action != glfw.RELEASE:
       self.scaleInc -= 0.01

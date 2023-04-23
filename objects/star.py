@@ -6,7 +6,7 @@ from OpenGL.GL import *
 class Star():
   data = np.zeros(3 * 2, [("position", np.float32, 2)])
   parts = []
-  rotateY = 0.0
+  rotateX = 0.0
 
   def __init__(self):
 
@@ -45,8 +45,8 @@ class Star():
     ])
 
     rotateMx = np.array(
-      [[math.cos(math.radians(self.rotateY)), -math.sin(math.radians(self.rotateY)), 0.0, 0.0],
-      [math.sin(math.radians(self.rotateY)), math.cos(math.radians(self.rotateY)), 0.0, 0.0],
+      [[math.cos(math.radians(self.rotateX)), -math.sin(math.radians(self.rotateX)), 0.0, 0.0],
+      [math.sin(math.radians(self.rotateX)), math.cos(math.radians(self.rotateX)), 0.0, 0.0],
       [0.0, 0.0, 1.0, 0.0],
       [0.0, 0.0, 0.0, 1.]], dtype=np.float32)
     
@@ -63,6 +63,11 @@ class Star():
     return transformationMx
   
   def handleKeyEvent(self, window, key, scancode, action, mods):
-    if key == glfw.KEY_G and action != glfw.RELEASE:
-      self.rotateY += 10
+        pass
+  
+  def handleTime(self, time):
 
+    if time % 8 != 0:
+      return
+  
+    self.rotateX += 10

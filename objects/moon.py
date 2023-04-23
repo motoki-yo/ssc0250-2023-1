@@ -12,8 +12,8 @@ class Moon():
 
     # Moon
     for i in range(360):
-        x = math.sin(math.radians(i)) * 0.15
-        y = math.cos(math.radians(i)) * 0.15 + 0.8 - 0.1
+        x = math.sin(math.radians(i)) * 0.2
+        y = math.cos(math.radians(i)) * 0.2 + 0.8 - 0.1
         self.data[i] = [x, y]
 
     self.parts.append(

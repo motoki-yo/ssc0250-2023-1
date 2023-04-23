@@ -46,3 +46,5 @@ Implementation made for the discipline of Computer Graphics - SSC0250 at ICMC - 
   - Moves Fish (W = Up, A = Left, S = Down, D = Right)
 - `Z, X`
   - Scales Fish (Z = Smaller, X = Bigger)
+- `I, J, K, L`
+  - Moves Ship (I = Up, J = Left, K = Down, L = Right)

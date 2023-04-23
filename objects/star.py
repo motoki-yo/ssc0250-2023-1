@@ -36,6 +36,7 @@ class Star():
       self.data[i][0][1] -= 0.5
       self.data[i][0][0] += 0.5
       
+  #Transform Matrix
   def getTransformMatrix(self):
     translateMx = np.array([
       [1.0, 0.0, 0.0, -0.5],
@@ -44,6 +45,7 @@ class Star():
       [0.0, 0.0, 0.0, 1.0]
     ])
 
+    #Rotate Matrix
     rotateMx = np.array(
       [[math.cos(math.radians(self.rotateX)), -math.sin(math.radians(self.rotateX)), 0.0, 0.0],
       [math.sin(math.radians(self.rotateX)), math.cos(math.radians(self.rotateX)), 0.0, 0.0],
@@ -62,9 +64,11 @@ class Star():
 
     return transformationMx
   
+  #On key event do nothing
   def handleKeyEvent(self, window, key, scancode, action, mods):
         pass
   
+  #on time event rotate the star 
   def handleTime(self, time):
 
     if time % 8 != 0:

@@ -6,6 +6,7 @@ Implementation made for the discipline of Computer Graphics - SSC0250 at ICMC - 
 
 ## Projects:
 [openGLSeaView](t1/README.md)
+
 [second assignment WaveFront](t2/README.md)
 
 ## Students:

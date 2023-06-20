@@ -4,6 +4,10 @@ Repo for assignments
 
 Implementation made for the discipline of Computer Graphics - SSC0250 at ICMC - USP
 
+## Projects:
+[openGLSeaView](t1/README.md)
+[second assignment WaveFront](t2/README.md)
+
 ## Students:
 
 - Eduardo Rodrigues Amaral - 11735021

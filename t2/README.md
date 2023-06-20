@@ -1,4 +1,4 @@
-# openGLSeaView
+# WaveFront
 
 Simple OpenGL program that displays a sea view with interactive elements.
 Made using OpenGL, GLFW and Python.
@@ -42,9 +42,4 @@ Implementation made for the discipline of Computer Graphics - SSC0250 at ICMC - 
 
 - `<-, ->`
   - Rotates Sun and Moon
-- `W, A, S, D`
-  - Moves Fish (W = Up, A = Left, S = Down, D = Right)
-- `Z, X`
-  - Scales Fish (Z = Smaller, X = Bigger)
-- `I, J, K, L`
-  - Moves Ship (I = Up, J = Left, K = Down, L = Right)
+

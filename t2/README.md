@@ -1,4 +1,4 @@
-# WaveFront
+# openGLSeaView
 
 Simple OpenGL program that displays a sea view with interactive elements.
 Made using OpenGL, GLFW and Python.
@@ -26,7 +26,19 @@ Implementation made for the discipline of Computer Graphics - SSC0250 at ICMC - 
   ```
   pip install pipenv
   ```
-- To run the program run the following command (the program may install the required packages before running):
+- Install the necessary program dependencies:
+
+  ```
+  pipenv install
+  ```
+
+  or
+
+  ```
+  ./setup
+  ```
+
+- To run the program run the following command:
 
   ```
   pipenv run python3 main.py
@@ -42,4 +54,9 @@ Implementation made for the discipline of Computer Graphics - SSC0250 at ICMC - 
 
 - `<-, ->`
   - Rotates Sun and Moon
-
+- `W, A, S, D`
+  - Moves Fish (W = Up, A = Left, S = Down, D = Right)
+- `Z, X`
+  - Scales Fish (Z = Smaller, X = Bigger)
+- `I, J, K, L`
+  - Moves Ship (I = Up, J = Left, K = Down, L = Right)

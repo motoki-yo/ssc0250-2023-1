@@ -26,7 +26,19 @@ Implementation made for the discipline of Computer Graphics - SSC0250 at ICMC - 
   ```
   pip install pipenv
   ```
-- To run the program run the following command (the program may install the required packages before running):
+- Install the necessary program dependencies:
+
+  ```
+  pipenv install
+  ```
+
+  or
+
+  ```
+  ./setup
+  ```
+
+- To run the program run the following command:
 
   ```
   pipenv run python3 main.py

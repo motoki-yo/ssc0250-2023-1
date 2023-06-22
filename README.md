@@ -1,13 +1,9 @@
-# ssc0250-2023-1
+# openGLSeaView
 
-Repo for assignments
+Simple OpenGL program that displays a sea view with interactive elements.
+Made using OpenGL, GLFW and Python.
 
 Implementation made for the discipline of Computer Graphics - SSC0250 at ICMC - USP
-
-## Projects:
-[openGLSeaView](t1/README.md)
-
-[second assignment WaveFront](t2/README.md)
 
 ## Students:
 
@@ -23,3 +19,32 @@ Implementation made for the discipline of Computer Graphics - SSC0250 at ICMC - 
 - numpy Version: 1.24.2
 - glfw Version: 2.5.9
 - pyopengl Version: 3.1.6
+
+## Instructions:
+
+- Install `pipenv` in order to run the program environment:
+  ```
+  pip install pipenv
+  ```
+- To run the program run the following command (the program may install the required packages before running):
+
+  ```
+  pipenv run python3 main.py
+  ```
+
+  or
+
+  ```
+  ./run
+  ```
+
+## Program Controls:
+
+- `<-, ->`
+  - Rotates Sun and Moon
+- `W, A, S, D`
+  - Moves Fish (W = Up, A = Left, S = Down, D = Right)
+- `Z, X`
+  - Scales Fish (Z = Smaller, X = Bigger)
+- `I, J, K, L`
+  - Moves Ship (I = Up, J = Left, K = Down, L = Right)

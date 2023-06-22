@@ -4,6 +4,12 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+pyopengl = "*"
+numpy = "*"
+glfw = "*"
+pyglm = "*"
+pillow = "*"
+screeninfo = "*"
 
 [dev-packages]
 

@@ -26,8 +26,10 @@ def parse_wavefront_file(filename):
         elif values[0] == 'f':
             face = []
             face_texture = []
+
             for v in values[1:]:
                 w = v.split('/')
+                
                 face.append(int(w[0]))
                 if len(w) >= 2 and len(w[1]) > 0:
                     face_texture.append(int(w[1]))

@@ -4,6 +4,12 @@ import numpy as np
 import glm
 from PIL import Image
 
+LIMITS = {
+    'x': (-98, 98),
+    'y': (2, 98),
+    'z': (-98, 98),
+}
+
 class SceneSetup:
     objects_function = []
     shaders = []
@@ -13,14 +19,15 @@ class SceneSetup:
 
     time = 0
     polygonal_mode = False
-    camera_pos   = glm.vec3(0.0,  0.0,  1.0)
+    camera_pos   = glm.vec3(0,5,0)
     camera_front = glm.vec3(0.0,  0.0, -1.0)
     camera_up    = glm.vec3(0.0,  1.0,  0.0)
     first_mouse = True
-    yaw = -90.0 
+    yaw = -90.0
     pitch = 0.0
+    projection_angle = 45.0
 
-    def __init__(self, width, height, window_title, camera_speed = 0.2, sensitivity = 0.1, initial_color = (255,255,255)):
+    def __init__(self, width, height, window_title, camera_speed = 0.8, sensitivity = 0.3, initial_color = (255,255,255)):
         self.height = height
         self.width = width
         self.window_title = window_title
@@ -104,7 +111,7 @@ class SceneSetup:
 
     def __handle_key_event__(self, window, key, scancode, action, mods):
         for obj in self.objects:
-            obj.handleKeyEvent(window, key, scancode, action, mods)
+            obj.__handle_key_event__(window, key, scancode, action, mods)
 
         if key == glfw.KEY_W and action != glfw.RELEASE:
             self.camera_pos += self.camera_speed * self.camera_front
@@ -118,8 +125,40 @@ class SceneSetup:
         if key == glfw.KEY_D and action != glfw.RELEASE:
             self.camera_pos += glm.normalize(glm.cross(self.camera_front, self.camera_up)) * self.camera_speed
 
+        if self.camera_pos[0] < LIMITS['x'][0]:
+            self.camera_pos[0] = LIMITS['x'][0]
+        elif self.camera_pos[0] > LIMITS['x'][1]:
+            self.camera_pos[0] = LIMITS['x'][1]
+        
+        if self.camera_pos[1] < LIMITS['y'][0]:
+            self.camera_pos[1] = LIMITS['y'][0]
+        elif self.camera_pos[1] > LIMITS['y'][1]:
+            self.camera_pos[1] = LIMITS['y'][1]
+
+        if self.camera_pos[2] < LIMITS['z'][0]:
+            self.camera_pos[2] = LIMITS['z'][0]
+        elif self.camera_pos[2] > LIMITS['z'][1]:
+            self.camera_pos[2] = LIMITS['z'][1]
+
         if key == glfw.KEY_P and action != glfw.RELEASE:
             self.polygonal_mode = not self.polygonal_mode
+
+        if key == glfw.KEY_MINUS and action != glfw.RELEASE:
+            self.sensitivity -= 0.01
+
+        if key == glfw.KEY_EQUAL and action != glfw.RELEASE:
+            self.sensitivity += 0.01
+
+        if key == glfw.KEY_Z and action != glfw.RELEASE:
+            self.projection_angle -= 1
+        if key == glfw.KEY_X and action != glfw.RELEASE:
+            self.projection_angle += 1
+        
+        if self.projection_angle < 45:
+            self.projection_angle = 45
+        elif self.projection_angle > 90:
+            self.projection_angle = 90
+            
     
     def __handle_mouse_event__(self, window, xpos, ypos):
 
@@ -214,7 +253,7 @@ class SceneSetup:
 
     def get_projection(self):
         # perspective parameters: fovy, aspect, near, far
-        projection = glm.perspective(glm.radians(45.0), self.width/self.height, 0.1, 1000.0)
+        projection = glm.perspective(glm.radians(self.projection_angle), self.width/self.height, 0.1, 1000.0)
         projection = np.array(projection)
         return projection
 
@@ -224,6 +263,10 @@ class SceneSetup:
                 self.time = 0
 
             self.time += 1
+
+            for obj in self.objects:
+                if hasattr(obj, '__handle_time_event__'):
+                    obj.__handle_time_event__(self.time)
 
             glfw.poll_events()
 
@@ -240,6 +283,8 @@ class SceneSetup:
                 vao = objSc["vao"]
                 texture = objSc["texture"]
 
+                glBindVertexArray(vao)
+
                 glUniformMatrix4fv(self.get_uniform_location("model"), 1, GL_TRUE, obj.get_model())
 
                 if texture is not None:
@@ -249,10 +294,10 @@ class SceneSetup:
                     r,g,b,a = self.__convert_rgb__(obj.color)
                     glUniform1i(self.get_uniform_location("hasTexture"), 0)
                     glUniform4f(self.get_uniform_location("color"), r, g, b, a)
-
-                glBindVertexArray(vao)
                                 
-                glDrawArrays(GL_TRIANGLES, 0, obj.vertices_data.size)
+                glDrawArrays(obj.drawing_mode, 0, obj.vertices_data.size)
+
+                glBindVertexArray(0)
 
 
             glUniformMatrix4fv(self.get_uniform_location("view"), 1, GL_TRUE, self.get_view())

@@ -4,32 +4,60 @@ from OpenGL.GL import *
 import glm
 from wavefront import parse_wavefront_file
 
+def parse_initial_model_state(state_obj):
+
+    default_model_state = {
+        "translateX": 0.0,
+        "translateY": 0.0,
+        "translateZ": 0.0,
+
+        "angle": 0.0,
+        "rotateX": 0.0,
+        "rotateY": 0.0,
+        "rotateZ": 1.0,
+
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+    }
+
+    model_state = default_model_state
+
+    if state_obj is None:
+        return model_state
+    
+    if 'scale' in state_obj:
+        model_state['scaleX'] = state_obj['scale']
+        model_state['scaleY'] = state_obj['scale']
+        model_state['scaleZ'] = state_obj['scale']
+    
+    for key in state_obj:
+        if key in model_state:
+            model_state[key] = state_obj[key]
+    
+    return model_state
+
 class Object():
-    vertices_list = []
-    textures_coord_list = []
 
     vertices_data = None
     textures_coord_data = None
 
-    translateX = 0.0
-    translateY = 0.0
-    translateZ = 0.0
-
-    angle = 0.0
-    rotateX = 0.0
-    rotateY = 0.0
-    rotateZ = 1.0
-
-    scaleX = 1.0
-    scaleY = 1.0
-    scaleZ = 1.0
-
-    def __init__(self, obj_filename, texture_filename, color=(255,0,0)):
+    def __init__(self, obj_filename, texture_filename, initial_model_state = None, color=(255,0,0)):
         self.obj_filename = obj_filename
         self.texture_filename = texture_filename
         self.color = color
+        self.model_state = parse_initial_model_state(initial_model_state)
+
+        self.vertices_list = []
+        self.textures_coord_list = []
+        self.drawing_mode = GL_TRIANGLES
 
         model = parse_wavefront_file(obj_filename)
+
+        sample_face = model['faces'][0]
+
+        if len(sample_face[0]) == 4:
+            self.drawing_mode = GL_QUADS
         
         for face in model['faces']:
             for vertice_id in face[0]:
@@ -48,15 +76,15 @@ class Object():
     def get_model(self):
         model = glm.mat4(1.0)
 
-        model = glm.translate(model, glm.vec3(self.translateX, self.translateY, self.translateZ))
+        model = glm.translate(model, glm.vec3(self.model_state['translateX'], self.model_state['translateY'], self.model_state['translateZ']))
 
-        model = glm.rotate(model, np.radians(self.angle), glm.vec3(self.rotateX, self.rotateY, self.rotateZ))
+        model = glm.rotate(model, np.radians(self.model_state['angle']), glm.vec3(self.model_state['rotateX'], self.model_state['rotateY'], self.model_state['rotateZ']))
         
-        model = glm.scale(model, glm.vec3(self.scaleX, self.scaleY, self.scaleZ))
+        model = glm.scale(model, glm.vec3(self.model_state['scaleX'], self.model_state['scaleY'], self.model_state['scaleZ']))
 
         model = np.array(model)
 
         return model
 
-    def handleKeyEvent(self, window, key, scancode, action, mods):
+    def __handle_key_event__(self, window, key, scancode, action, mods):
         pass

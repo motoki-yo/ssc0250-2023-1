@@ -2,6 +2,7 @@ def parse_wavefront_file(filename):
     objects = {}
     vertices = []
     texture_coords = []
+    normals = []
     faces = []
 
     material = None
@@ -19,6 +20,9 @@ def parse_wavefront_file(filename):
         ### recuperando coordenadas de textura
         elif values[0] == 'vt':
             texture_coords.append(values[1:3])
+        
+        elif values[0] == 'vn':
+            normals.append(values[1:4])
 
         ### recuperando faces 
         elif values[0] in ('usemtl', 'usemat'):
@@ -26,21 +30,25 @@ def parse_wavefront_file(filename):
         elif values[0] == 'f':
             face = []
             face_texture = []
+            face_normals = []
 
             for v in values[1:]:
                 w = v.split('/')
                 
                 face.append(int(w[0]))
+                face_normals.append(int(w[2]))
+
                 if len(w) >= 2 and len(w[1]) > 0:
                     face_texture.append(int(w[1]))
                 else:
                     face_texture.append(0)
 
-            faces.append((face, face_texture, material))
+            faces.append((face, face_texture,face_normals, material))
 
     model = {}
     model['vertices'] = vertices
     model['texture'] = texture_coords
     model['faces'] = faces
+    model['normals'] = normals
 
     return model

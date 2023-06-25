@@ -1,4 +1,3 @@
-import glfw
 import numpy as np
 from OpenGL.GL import *
 import glm
@@ -37,18 +36,42 @@ def parse_initial_model_state(state_obj):
     
     return model_state
 
+
+def parse_initial_light_state(state_obj):
+    
+    default_light_state = {
+            "ka": 0.5,
+            "kd": 0.5,
+            "ks": 0.9,
+            "ns": 32,
+    }
+
+    light_state = default_light_state
+
+    if state_obj is None:
+        return light_state
+
+    for key in state_obj:
+        if key in light_state:
+            light_state[key] = state_obj[key]
+    
+    return light_state
+
 class Object():
 
     vertices_data = None
     textures_coord_data = None
 
-    def __init__(self, obj_filename, texture_filename, initial_model_state = None, color=(255,0,0)):
+
+    def __init__(self, obj_filename, texture_filename, initial_state = None, color=(255,0,0)):
         self.obj_filename = obj_filename
         self.texture_filename = texture_filename
         self.color = color
-        self.model_state = parse_initial_model_state(initial_model_state)
+        self.model_state = parse_initial_model_state(initial_state)
+        self.light_state = parse_initial_light_state(initial_state)
 
         self.vertices_list = []
+        self.normals_list = []
         self.textures_coord_list = []
         self.drawing_mode = GL_TRIANGLES
 
@@ -58,12 +81,14 @@ class Object():
 
         if len(sample_face[0]) == 4:
             self.drawing_mode = GL_QUADS
-        
+
         for face in model['faces']:
             for vertice_id in face[0]:
                 self.vertices_list.append( model['vertices'][vertice_id-1] )
             for texture_id in face[1]:
                 self.textures_coord_list.append( model['texture'][texture_id-1] )
+            for normal_id in face[2]:
+                self.normals_list.append( model['normals'][normal_id-1] )
 
         self.vertices_data = np.zeros(len(self.vertices_list), [("position", np.float32, 3)])
         self.vertices_data['position'] = self.vertices_list
@@ -71,6 +96,10 @@ class Object():
         self.textures_coord_data = np.zeros(len(self.textures_coord_list), [("texture_coord", np.float32, 2)])
 
         self.textures_coord_data['texture_coord'] = self.textures_coord_list
+
+        self.normals_data = np.zeros(len(self.normals_list), [("normals", np.float32, 3)])
+
+        self.normals_data['normals'] = self.normals_list
 
 
     def get_model(self):

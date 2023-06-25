@@ -6,9 +6,9 @@ def convert_quads_to_triangles(input_file: str, output_file: str):
             for line in f_in:
                 if line.startswith('f'):
                     vertices = line.split()[1:]
-                    if len(vertices) == 4:
-                        f_out.write(f'f {vertices[0]} {vertices[1]} {vertices[2]}\n')
-                        f_out.write(f'f {vertices[0]} {vertices[2]} {vertices[3]}\n')
+                    if len(vertices) > 3:
+                        for i in range(1, len(vertices) - 1):
+                            f_out.write(f'f {vertices[0]} {vertices[i]} {vertices[i + 1]}\n')
                     else:
                         f_out.write(line)
                 else:

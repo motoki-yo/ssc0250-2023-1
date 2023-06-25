@@ -1,5 +1,3 @@
-import glfw
-import glm
 import numpy as np
 from objects import Object
 
@@ -21,6 +19,8 @@ class Moon(Object):
 
             self.model_state['translateX'] = self.starting_model_state['translateX'] + x
             self.model_state['translateZ'] = self.starting_model_state['translateZ'] + z
+
+            self.light_position = (self.model_state['translateX'], self.model_state['translateY'], self.model_state['translateZ'])
             
 
             if self.angle >= 2 * np.pi:

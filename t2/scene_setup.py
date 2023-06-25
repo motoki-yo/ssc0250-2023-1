@@ -101,11 +101,20 @@ class SceneSetup:
                 glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, None)
                 glEnableVertexAttribArray(1)
 
+            object_normal_vbo = glGenBuffers(1)
+            glBindBuffer(GL_ARRAY_BUFFER, object_normal_vbo)
+            glBufferData(GL_ARRAY_BUFFER, obj.normals_data.nbytes, obj.normals_data, GL_STATIC_DRAW)
+
+            glBindBuffer(GL_ARRAY_BUFFER, object_normal_vbo)
+            glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, None)
+            glEnableVertexAttribArray(2)
+
             self.objects_in_scene.append({
                 "vao": object_vao,
                 "vbo": object_vbo,
                 "texture": texture,                
                 "texture_vbo": object_texture_vbo,
+                "normal_vbo": object_normal_vbo,
                 "obj": obj
             })
 
@@ -287,6 +296,17 @@ class SceneSetup:
 
                 glUniformMatrix4fv(self.get_uniform_location("model"), 1, GL_TRUE, obj.get_model())
 
+                glUniform1f(self.get_uniform_location("ka"), obj.light_state["ka"])
+
+                glUniform1f(self.get_uniform_location("kd"), obj.light_state["kd"])
+
+                glUniform1f(self.get_uniform_location("ks"), obj.light_state["ks"])
+                
+                glUniform1f(self.get_uniform_location("ns"), obj.light_state["ns"])
+
+                if hasattr(obj, 'light_position'):
+                    glUniform3f(self.get_uniform_location("lightPos"), obj.light_position[0], obj.light_position[1], obj.light_position[2])
+
                 if texture is not None:
                     glUniform1i(self.get_uniform_location("hasTexture"), 1)
                     glBindTexture(GL_TEXTURE_2D, texture)
@@ -303,6 +323,8 @@ class SceneSetup:
             glUniformMatrix4fv(self.get_uniform_location("view"), 1, GL_TRUE, self.get_view())
 
             glUniformMatrix4fv(self.get_uniform_location("projection"), 1, GL_TRUE, self.get_projection())
+
+            glUniform3f(self.get_uniform_location("viewPos"), self.camera_pos[0], self.camera_pos[1], self.camera_pos[2])
 
             glfw.swap_buffers(self.window)
         

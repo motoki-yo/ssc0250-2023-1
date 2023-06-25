@@ -1,4 +1,3 @@
-import glfw
 import glm
 import numpy as np
 from objects import Object

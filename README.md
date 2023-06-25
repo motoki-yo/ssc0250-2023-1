@@ -6,9 +6,9 @@ Implementation of the discipline of Computer Graphics - SSC0250 at ICMC - USP
 
 ## Projects:
 
-[openGLSeaView](t1/README.md)
+[openGLSeaView](t1/)
 
-[openGLFarm3D](t2/README.md)
+[openGLFarm3D](t2/)
 
 ## Students:
 

@@ -1,0 +1,59 @@
+{
+  "cat": {
+    "translateX": 24.0,
+    "angle": -90.0,
+    "rotateX": 1.0,
+    "rotateY": 0.0,
+    "rotateZ": 0.0,
+    "scale": 0.1
+  },
+  "penguin": {
+    "translateX": 23.0,
+    "angle": -90.0,
+    "rotateX": 1.0,
+    "rotateY": 0.0,
+    "rotateZ": 0.0,
+    "scale": 0.05
+  },
+  "penguin2": {
+    "translateX": 24.0,
+    "translateZ": 2.0,
+    "scale": 3
+  },
+  "box": {
+    "translateY": 1.0
+  },
+  "ground": {
+    "translateX": -50,
+    "scale": 100
+  },
+  "grass": {
+    "translateX": 50,
+    "scale": 100
+  },
+  "quetzcoatlus": {
+    "translateX": 25,
+    "translateY": 13.0,
+    "translateZ": 3.0,
+    "angle": -90.0,
+    "rotateX": 10.0,
+    "rotateY": 0.0,
+    "rotateZ": 0.0,
+    "scale": 0.05
+  },
+  "house": {
+    "translateX": -45.0,
+    "scale": 2.5
+  },
+  "skybox": {
+    "scale": 100
+  },
+  "moon": {
+    "translateY": 95,
+    "scale": 0.1
+  },
+  "bed": {
+    "translateZ": -55,
+    "scale": 0.05
+  }
+}

@@ -54,6 +54,12 @@ Implementation made for the discipline of Computer Graphics - SSC0250 at ICMC - 
   ./run
   ```
 
+- To convert a .obj file to a compatible .obj file run the following command:
+
+  ```
+  python convert.py <input_file>
+  ```
+
 ## Program Controls:
 
 - `W, A, S, D`

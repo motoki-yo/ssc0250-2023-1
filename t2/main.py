@@ -3,6 +3,7 @@ from objects import Object
 from screeninfo import get_monitors
 from cat import Cat
 from moon import Moon
+from OpenGL.GL import *
 import json
 
 vertex_code = """

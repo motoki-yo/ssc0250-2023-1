@@ -83,7 +83,7 @@ primary_monitor = get_monitors()[0]
 screen_width = primary_monitor.width
 screen_height = primary_monitor.height
 
-scene = SceneSetup(screen_width, screen_height, "Project 2")
+scene = SceneSetup(screen_width, screen_height, "Night at the Farm - 3D")
 
 scene.add_shader(vertex_code, GL_VERTEX_SHADER)
 scene.add_shader(fragment_code, GL_FRAGMENT_SHADER)
